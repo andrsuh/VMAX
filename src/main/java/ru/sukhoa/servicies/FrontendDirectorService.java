@@ -9,9 +9,13 @@ import ru.sukhoa.dao.FrontendDirectorInfoDAO;
 import ru.sukhoa.domain.FrontendDirector;
 import ru.sukhoa.domain.FrontendDirectorInfo;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.google.common.math.Quantiles;
 
 @Service
 public class FrontendDirectorService {
@@ -19,6 +23,8 @@ public class FrontendDirectorService {
     private FrontendDirectorDAO frontendDirectorDAO;
 
     private FrontendDirectorInfoDAO frontendDirectorInfoDAO;
+
+    private StatisticsService statisticsService;
 
     @Autowired
     public void setFrontendDirectorInfoDAO(FrontendDirectorInfoDAO frontendDirectorInfoDAO) {
@@ -28,6 +34,11 @@ public class FrontendDirectorService {
     @Autowired
     public void setFrontendDirectorDAO(FrontendDirectorDAO frontendDirectorDAO) {
         this.frontendDirectorDAO = frontendDirectorDAO;
+    }
+
+    @Autowired
+    public void setStatisticsService(StatisticsService statisticsService) {
+        this.statisticsService = statisticsService;
     }
 
     @NotNull
@@ -52,7 +63,9 @@ public class FrontendDirectorService {
     @NotNull
     public List<FrontendDirector> getProblemDirectors(@Nullable Date fromDate, @Nullable Date toDate) {
         return frontendDirectorInfoDAO.getDirectorsInfoList().stream()
-                .filter(info -> info.satisfiedDate(fromDate, toDate) && info.hasProblem())
+                .filter(info -> info.satisfiedDate(fromDate, toDate)
+                        && info.getSummaryBucketRate() > statisticsService.getQueueSummaryRateUpperBound()
+                        && info.getMbRate() > statisticsService.getDirectorsMbRateUpperBound())
                 .map(x -> x.getDirector().getId())
                 .distinct()
                 .map(frontendDirectorDAO::getDirector)
