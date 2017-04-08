@@ -23,24 +23,32 @@ public class FrontendDirectorInfoDAO {
 
     @NotNull
     public List<FrontendDirectorInfo> getDirectorInfoListById(long id) {
-        Session session = sessionFactory.openSession();
+        Session session = null;
 
-        //noinspection unchecked
-        List<FrontendDirectorInfo> result = session.createCriteria(FrontendDirectorInfo.class)
-                .add(Restrictions.eq("directorKey", id))
-                .list();
-
-        session.close();
-        return result;
+        try {
+            session = sessionFactory.openSession();
+            //noinspection unchecked
+            return session.createCriteria(FrontendDirectorInfo.class)
+                    .add(Restrictions.eq("directorKey", id))
+                    .list();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
     }
 
     @NotNull
     public List<FrontendDirectorInfo> getDirectorsInfoList() {
-        Session session = sessionFactory.openSession();
-        //noinspection unchecked
-        List<FrontendDirectorInfo> result = session.createCriteria(FrontendDirectorInfo.class).list();
-        session.close();
-
-        return result;
+        Session session = null;
+        try {
+            session = sessionFactory.openSession();
+            //noinspection unchecked
+            return session.createCriteria(FrontendDirectorInfo.class).list();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
     }
 }

@@ -21,11 +21,15 @@ public class StorageGroupInfoDAO {
 
     @NotNull
     public List<StorageGroupInfo> getStorageGroupInfoList() {
-        Session session = sessionFactory.openSession();
-        //noinspection unchecked
-        List<StorageGroupInfo> result = session.createCriteria(StorageGroupInfo.class).list();
-        session.close();
-
-        return result;
+        Session session = null;
+        try {
+            session = sessionFactory.openSession();
+            //noinspection unchecked
+            return session.createCriteria(StorageGroupInfo.class).list();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
     }
 }

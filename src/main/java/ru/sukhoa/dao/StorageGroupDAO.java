@@ -6,7 +6,6 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.sukhoa.domain.StorageGroup;
-import ru.sukhoa.domain.StorageGroupInfo;
 
 import java.util.List;
 
@@ -21,11 +20,15 @@ public class StorageGroupDAO {
 
     @NotNull
     public List<StorageGroup> getStorageGroupList() {
-        Session session = sessionFactory.openSession();
-        //noinspection unchecked
-        List<StorageGroup> result = session.createCriteria(StorageGroup.class).list();
-        session.close();
-
-        return result;
+        Session session = null;
+        try {
+            session = sessionFactory.openSession();
+            //noinspection unchecked
+            return session.createCriteria(StorageGroup.class).list();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
     }
 }

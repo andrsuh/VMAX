@@ -22,27 +22,28 @@ public class FrontendDirectorDAO {
 
     @Nullable
     public FrontendDirector getDirector(long id) {
-        Session session = sessionFactory.openSession();
-        FrontendDirector frontendDirector = (FrontendDirector) session.get(FrontendDirector.class, id);
-        session.close();
-        return frontendDirector;
+        Session session = null;
+        try {
+            session = sessionFactory.openSession();
+            return (FrontendDirector) session.get(FrontendDirector.class, id);
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
     }
 
     @Nullable
     public List<FrontendDirector> getDirectorsList() {
-        Session session = sessionFactory.openSession();
-        //noinspection unchecked
-        List<FrontendDirector> frontendDirectors = session.createCriteria(FrontendDirector.class).list();
-        session.close();
-        return frontendDirectors;
+        Session session = null;
+        try {
+            session = sessionFactory.openSession();
+            //noinspection unchecked
+            return session.createCriteria(FrontendDirector.class).list();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
     }
-
-//    @NotNull
-//    public List<DateTimeStatement> getTime() {
-//        Session session = sessionFactory.openSession();
-//        //noinspection unchecked
-//        List<DateTimeStatement> times = session.createCriteria(DateTimeStatement.class).list();
-//        session.close();
-//        return times;
-//    }
 }
