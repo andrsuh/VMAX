@@ -62,9 +62,8 @@ public class FrontendDirectorService {
                 .filter(info -> info.satisfiedDate(fromDate, toDate)
                         && info.getSummaryBucketRate() > statisticsService.getQueueSummaryRateUpperBound()
                         && info.getMbRate() > statisticsService.getDirectorsMbRateUpperBound())
-                .map(x -> x.getDirector().getId())
+                .map(FrontendDirectorInfo::getDirector)
                 .distinct()
-                .map(frontendDirectorDAO::getDirector)
                 .collect(Collectors.toList());
     }
 }
