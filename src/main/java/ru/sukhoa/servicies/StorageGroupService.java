@@ -5,12 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.sukhoa.dao.StorageGroupDAO;
 import ru.sukhoa.dao.StorageGroupInfoDAO;
-import ru.sukhoa.domain.FrontendDirector;
 import ru.sukhoa.domain.StorageGroup;
 import ru.sukhoa.domain.StorageGroupInfo;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,16 +54,19 @@ public class StorageGroupService {
     }
 
     public List<StorageGroup> getProblemGroupsForDirector(long directorId, Date fromDate, Date toDate) {
-        boolean problemDetected = frontendDirectorService.getProblemDirectors(fromDate, toDate).stream()
-                .map(FrontendDirector::getId)
-                .anyMatch(x -> x.compareTo(directorId) == 0);
+        // getting all dates between (fromDate, toDate) where problems with director (with specified id) occured
+        final Set<Date> problemDates = frontendDirectorService.getProblemDirectorsInfoStream(fromDate, toDate)
+                .filter(info -> info.getDirector().getId() == directorId)
+                .map(info -> info.getDateStamp().getDatestamp())
+                .collect(Collectors.toSet());
 
-        if (!problemDetected) {
+        if (problemDates.isEmpty()) {
             throw new RuntimeException("No problems connected with specified director was found");
         }
 
+        // getting all SG which have been high loaded during same dates as a specified director
         return storageGroupInfoDAO.getStorageGroupInfoList().stream()
-                .filter(info -> info.satisfiedDate(fromDate, toDate)
+                .filter(info -> problemDates.contains(info.getDateStamp().getDatestamp())
                         && info.getSummaryBucketRate() > statisticsService.getResponseTimeSummaryRateUpperBound()
                         && info.getMbRate() > statisticsService.getGroupsMbRateUpperBound())
                 .map(StorageGroupInfo::getStorageGroup)

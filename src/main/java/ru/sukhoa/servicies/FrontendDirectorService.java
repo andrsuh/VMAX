@@ -12,6 +12,7 @@ import ru.sukhoa.domain.FrontendDirectorInfo;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class FrontendDirectorService {
@@ -58,12 +59,17 @@ public class FrontendDirectorService {
 
     @NotNull
     public List<FrontendDirector> getProblemDirectors(@Nullable Date fromDate, @Nullable Date toDate) {
-        return frontendDirectorInfoDAO.getDirectorsInfoList().stream()
-                .filter(info -> info.satisfiedDate(fromDate, toDate)
-                        && info.getSummaryBucketRate() > statisticsService.getQueueSummaryRateUpperBound()
-                        && info.getMbRate() > statisticsService.getDirectorsMbRateUpperBound())
+        return getProblemDirectorsInfoStream(fromDate, toDate)
                 .map(FrontendDirectorInfo::getDirector)
                 .distinct()
                 .collect(Collectors.toList());
+    }
+
+    @NotNull
+    public Stream<FrontendDirectorInfo> getProblemDirectorsInfoStream(@Nullable Date fromDate, @Nullable Date toDate) {
+        return frontendDirectorInfoDAO.getDirectorsInfoList().stream()
+                .filter(info -> info.satisfiedDate(fromDate, toDate)
+                        && (info.getSummaryBucketRate() > statisticsService.getQueueSummaryRateUpperBound()
+                        && info.getMbRate() > statisticsService.getDirectorsMbRateUpperBound()));
     }
 }
