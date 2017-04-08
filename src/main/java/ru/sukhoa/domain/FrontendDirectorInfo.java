@@ -67,6 +67,7 @@ public class FrontendDirectorInfo extends BaseInfo implements Serializable {
     }
 
     @Transient
+    @Override
     public double getSummaryBucketRate() {
         return queueBucket7Rate + queueBucket8Rate + queueBucket9Rate;
     }

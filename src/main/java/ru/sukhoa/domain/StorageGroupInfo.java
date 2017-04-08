@@ -1,10 +1,7 @@
 package ru.sukhoa.domain;
 
-import com.sun.istack.internal.Nullable;
-
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
 
 
 @Entity
@@ -70,6 +67,7 @@ public class StorageGroupInfo extends BaseInfo implements Serializable {
     }
 
     @Transient
+    @Override
     public double getSummaryBucketRate() {
         return respTimeReadRateBucket6 + respTimeReadRateBucket7 + respTimeWriteRateBucket6 + respTimeWriteRateBucket7;
     }

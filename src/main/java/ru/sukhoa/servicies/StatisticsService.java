@@ -5,7 +5,10 @@ import com.sun.istack.internal.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.sukhoa.dao.FrontendDirectorInfoDAO;
+import ru.sukhoa.dao.StorageGroupInfoDAO;
+import ru.sukhoa.domain.BaseInfo;
 import ru.sukhoa.domain.FrontendDirectorInfo;
+import ru.sukhoa.domain.StorageGroupInfo;
 
 import javax.annotation.PostConstruct;
 import java.util.Arrays;
@@ -18,36 +21,51 @@ public class StatisticsService {
 
     private FrontendDirectorInfoDAO frontendDirectorInfoDAO;
 
+    private StorageGroupInfoDAO storageGroupInfoDAO;
+
     private volatile Double queueSummaryRateUpperBound;
 
     private volatile Double directorsMbRateUpperBound;
+
+    private volatile Double responseTimeSummaryRateUpperBound;
+
+    private volatile Double groupsMbRateUpperBound;
 
     @Autowired
     public void setFrontendDirectorInfoDAO(FrontendDirectorInfoDAO frontendDirectorInfoDAO) {
         this.frontendDirectorInfoDAO = frontendDirectorInfoDAO;
     }
 
+    @Autowired
+    public void setStorageGroupInfoDAO(StorageGroupInfoDAO storageGroupInfoDAO) {
+        this.storageGroupInfoDAO = storageGroupInfoDAO;
+    }
+
     @PostConstruct
     public void initialize() {
-        List<FrontendDirectorInfo> infos = frontendDirectorInfoDAO.getDirectorsInfoList();
-        computeDirectorMbUpperBound(infos);
-        computeQueueBucketUpperBound(infos);
+        List<FrontendDirectorInfo> dInfos = frontendDirectorInfoDAO.getDirectorsInfoList();
+        List<StorageGroupInfo> gInfos = storageGroupInfoDAO.getStorageGroupInfoList();
+        queueSummaryRateUpperBound = computeBucketsUpperBound(dInfos);
+        directorsMbRateUpperBound = computeMbUpperBound(dInfos);
+        responseTimeSummaryRateUpperBound = computeBucketsUpperBound(gInfos);
+        groupsMbRateUpperBound = computeMbUpperBound(gInfos);
     }
 
-    private void computeQueueBucketUpperBound(@NotNull List<FrontendDirectorInfo> directorsInfoList) {
-        List<Double> summaryBucketRateFunction = directorsInfoList.stream()
-                .map(FrontendDirectorInfo::getSummaryBucketRate)
+    private double computeBucketsUpperBound(@NotNull List<? extends BaseInfo> directorsInfoList) {
+        List<Double> bucketRateValues = directorsInfoList.stream()
+                .map(BaseInfo::getSummaryBucketRate)
+                .filter(rate -> rate > 0.0)
                 .collect(Collectors.toList());
 
-        queueSummaryRateUpperBound = computeBound(summaryBucketRateFunction);
+        return computeBound(bucketRateValues);
     }
 
-    private void computeDirectorMbUpperBound(@NotNull List<FrontendDirectorInfo> directorsInfoList) {
-        List<Double> mbRateFunction = directorsInfoList.stream()
-                .map(FrontendDirectorInfo::getMbRate)
+    private double computeMbUpperBound(@NotNull List<? extends BaseInfo> directorsInfoList) {
+        List<Double> mbRateValues = directorsInfoList.stream()
+                .map(BaseInfo::getMbRate)
                 .collect(Collectors.toList());
 
-        directorsMbRateUpperBound = computeBound(mbRateFunction);
+        return computeBound(mbRateValues);
     }
 
     private double computeBound(@NotNull List<? extends Number> values) {
@@ -61,7 +79,7 @@ public class StatisticsService {
         if (queueSummaryRateUpperBound == null) {
             synchronized (this) {
                 if (queueSummaryRateUpperBound == null) {
-                    computeQueueBucketUpperBound(frontendDirectorInfoDAO.getDirectorsInfoList());
+                    computeBucketsUpperBound(frontendDirectorInfoDAO.getDirectorsInfoList());
                 }
             }
         }
@@ -73,10 +91,34 @@ public class StatisticsService {
         if (directorsMbRateUpperBound == null) {
             synchronized (this) {
                 if (directorsMbRateUpperBound == null) {
-                    computeDirectorMbUpperBound(frontendDirectorInfoDAO.getDirectorsInfoList());
+                    computeMbUpperBound(frontendDirectorInfoDAO.getDirectorsInfoList());
                 }
             }
         }
         return directorsMbRateUpperBound;
+    }
+
+    @NotNull
+    public Double getResponseTimeSummaryRateUpperBound() {
+        if (responseTimeSummaryRateUpperBound == null) {
+            synchronized (this) {
+                if (responseTimeSummaryRateUpperBound == null) {
+                    computeBucketsUpperBound(storageGroupInfoDAO.getStorageGroupInfoList());
+                }
+            }
+        }
+        return responseTimeSummaryRateUpperBound;
+    }
+
+    @NotNull
+    public Double getGroupsMbRateUpperBound() {
+        if (groupsMbRateUpperBound == null) {
+            synchronized (this) {
+                if (groupsMbRateUpperBound == null) {
+                    computeMbUpperBound(storageGroupInfoDAO.getStorageGroupInfoList());
+                }
+            }
+        }
+        return groupsMbRateUpperBound;
     }
 }

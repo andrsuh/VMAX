@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @MappedSuperclass
-public class BaseInfo {
+public abstract class BaseInfo {
 
     private DateTimeStatement dateStamp;
 
@@ -40,5 +40,8 @@ public class BaseInfo {
 
         return !(toDate != null && dateStamp.getDatestamp().compareTo(toDate) > 0);
     }
+
+    @Transient
+    public abstract double getSummaryBucketRate();
 
 }
