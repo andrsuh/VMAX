@@ -47,8 +47,8 @@ public class FrontendDirectorService {
     }
 
     @NotNull
-    public List<FrontendDirector> getAllDirectors() {
-        return frontendDirectorDAO.getAllDirectors();
+    public List<FrontendDirector> getDirectorsList() {
+        return frontendDirectorDAO.getDirectorsList();
     }
 
     @NotNull

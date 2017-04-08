@@ -7,16 +7,26 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.sukhoa.domain.FrontendDirector;
+import ru.sukhoa.domain.StorageGroup;
+import ru.sukhoa.domain.StorageGroupInfo;
 import ru.sukhoa.servicies.FrontendDirectorService;
+import ru.sukhoa.servicies.StorageGroupService;
 
 import java.util.Date;
 import java.util.List;
 
 
 @RestController
-public class FrontendDirectorController {
+public class MainController {
 
     private FrontendDirectorService directorService;
+
+    private StorageGroupService storageGroupService;
+
+    @Autowired
+    public void setStorageGroupService(StorageGroupService storageGroupService) {
+        this.storageGroupService = storageGroupService;
+    }
 
     @Autowired
     public void setDirectorService(FrontendDirectorService directorService) {
@@ -32,6 +42,17 @@ public class FrontendDirectorController {
 
     @RequestMapping(value = "directors", method = RequestMethod.GET)
     public List<FrontendDirector> getAllDirectors() {
-        return directorService.getAllDirectors();
+        return directorService.getDirectorsList();
+    }
+
+
+    @RequestMapping(value = "groups_info", method = RequestMethod.GET)
+    public List<StorageGroupInfo> getAllStorageGroupsInfo() {
+        return storageGroupService.getStorageGroupInfoList();
+    }
+
+    @RequestMapping(value = "groups", method = RequestMethod.GET)
+    public List<StorageGroup> getAllStorageGroups() {
+        return storageGroupService.getStorageGroupList();
     }
 }

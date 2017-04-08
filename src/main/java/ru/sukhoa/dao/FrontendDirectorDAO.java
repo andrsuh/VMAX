@@ -29,7 +29,7 @@ public class FrontendDirectorDAO {
     }
 
     @Nullable
-    public List<FrontendDirector> getAllDirectors() {
+    public List<FrontendDirector> getDirectorsList() {
         Session session = sessionFactory.openSession();
         //noinspection unchecked
         List<FrontendDirector> frontendDirectors = session.createCriteria(FrontendDirector.class).list();
