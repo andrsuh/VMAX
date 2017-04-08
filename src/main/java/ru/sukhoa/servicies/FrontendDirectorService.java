@@ -9,13 +9,9 @@ import ru.sukhoa.dao.FrontendDirectorInfoDAO;
 import ru.sukhoa.domain.FrontendDirector;
 import ru.sukhoa.domain.FrontendDirectorInfo;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import com.google.common.math.Quantiles;
 
 @Service
 public class FrontendDirectorService {

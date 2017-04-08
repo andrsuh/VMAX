@@ -1,12 +1,9 @@
 package ru.sukhoa.servicies;
 
 import com.google.common.math.Quantiles;
-
-
 import com.sun.istack.internal.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.sukhoa.dao.FrontendDirectorDAO;
 import ru.sukhoa.dao.FrontendDirectorInfoDAO;
 import ru.sukhoa.domain.FrontendDirectorInfo;
 
@@ -37,7 +34,7 @@ public class StatisticsService {
         computeQueueBucketUpperBound(infos);
     }
 
-    public void computeQueueBucketUpperBound(@NotNull List<FrontendDirectorInfo> directorsInfoList) {
+    private void computeQueueBucketUpperBound(@NotNull List<FrontendDirectorInfo> directorsInfoList) {
         List<Double> summaryBucketRateFunction = directorsInfoList.stream()
                 .map(FrontendDirectorInfo::getSummaryBucketRate)
                 .collect(Collectors.toList());
@@ -45,7 +42,7 @@ public class StatisticsService {
         queueSummaryRateUpperBound = computeBound(summaryBucketRateFunction);
     }
 
-    public void computeDirectorMbUpperBound(@NotNull List<FrontendDirectorInfo> directorsInfoList) {
+    private void computeDirectorMbUpperBound(@NotNull List<FrontendDirectorInfo> directorsInfoList) {
         List<Double> mbRateFunction = directorsInfoList.stream()
                 .map(FrontendDirectorInfo::getMbRate)
                 .collect(Collectors.toList());
@@ -59,6 +56,7 @@ public class StatisticsService {
     }
 
 
+    @NotNull
     public Double getQueueSummaryRateUpperBound() {
         if (queueSummaryRateUpperBound == null) {
             synchronized (this) {
@@ -70,6 +68,7 @@ public class StatisticsService {
         return queueSummaryRateUpperBound;
     }
 
+    @NotNull
     public Double getDirectorsMbRateUpperBound() {
         if (directorsMbRateUpperBound == null) {
             synchronized (this) {

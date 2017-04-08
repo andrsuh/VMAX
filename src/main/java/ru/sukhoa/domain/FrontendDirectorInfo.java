@@ -1,7 +1,6 @@
 package ru.sukhoa.domain;
 
 import com.sun.istack.internal.Nullable;
-import ru.sukhoa.servicies.StatisticsService;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -94,10 +93,6 @@ public class FrontendDirectorInfo implements Serializable {
         this.queueBucket9Rate = queueBucket9Rate;
     }
 
-//    public boolean hasProblem() {
-//        return getSummaryBucketRate() > StatisticsService.;
-//    }
-
     public boolean satisfiedDate(@Nullable Date fromDate, @Nullable Date toDate) {
         if (fromDate != null && dateStamp.getDatestamp().compareTo(fromDate) <= 0) {
             return false;
@@ -108,7 +103,7 @@ public class FrontendDirectorInfo implements Serializable {
 
     @Transient
     public double getSummaryBucketRate() {
-        return queueBucket7Rate + 100 * queueBucket8Rate + 1000 * queueBucket9Rate;
+        return queueBucket7Rate + queueBucket8Rate + queueBucket9Rate;
     }
 
 }
