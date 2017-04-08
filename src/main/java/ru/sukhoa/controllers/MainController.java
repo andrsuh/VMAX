@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.sukhoa.domain.FrontendDirector;
 import ru.sukhoa.domain.StorageGroup;
-import ru.sukhoa.domain.StorageGroupInfo;
 import ru.sukhoa.servicies.FrontendDirectorService;
 import ru.sukhoa.servicies.StorageGroupService;
 
@@ -51,12 +50,6 @@ public class MainController {
     @RequestMapping(value = "directors", method = RequestMethod.GET)
     public List<FrontendDirector> getAllDirectors() {
         return directorService.getDirectorsList();
-    }
-
-
-    @RequestMapping(value = "groups_info", method = RequestMethod.GET)
-    public List<StorageGroupInfo> getAllStorageGroupsInfo() {
-        return storageGroupService.getStorageGroupInfoList();
     }
 
     @RequestMapping(value = "groups", method = RequestMethod.GET)

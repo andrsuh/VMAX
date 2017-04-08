@@ -36,5 +36,4 @@ public class HibernateConfiguration {
 //
 //        return txManager;
 //    }
-
 }

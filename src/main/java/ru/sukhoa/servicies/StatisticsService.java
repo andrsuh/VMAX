@@ -73,7 +73,6 @@ public class StatisticsService {
         return quantiles.get(3) + 1.5 * (quantiles.get(3) - quantiles.get(1));
     }
 
-
     @NotNull
     public Double getQueueSummaryRateUpperBound() {
         if (queueSummaryRateUpperBound == null) {
