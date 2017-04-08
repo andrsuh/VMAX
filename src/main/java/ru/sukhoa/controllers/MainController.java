@@ -40,6 +40,14 @@ public class MainController {
         return directorService.getProblemDirectors(fromDate, toDate);
     }
 
+    @RequestMapping(value = "problem_groups", method = RequestMethod.GET)
+    public List<StorageGroup> getProblemGroupsForDirector(
+            @RequestParam(value = "director_id", required = true) long directorId,
+            @RequestParam(value = "fromDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date fromDate,
+            @RequestParam(value = "toDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date toDate) {
+        return storageGroupService.getProblemGroupsForDirector(directorId, fromDate, toDate);
+    }
+
     @RequestMapping(value = "directors", method = RequestMethod.GET)
     public List<FrontendDirector> getAllDirectors() {
         return directorService.getDirectorsList();
