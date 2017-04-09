@@ -5,7 +5,6 @@ import com.sun.istack.internal.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.sukhoa.dao.FrontendDirectorDAO;
-import ru.sukhoa.dao.FrontendDirectorInfoDAO;
 import ru.sukhoa.domain.FrontendDirector;
 import ru.sukhoa.domain.FrontendDirectorInfo;
 
@@ -19,22 +18,11 @@ public class FrontendDirectorService {
 
     private FrontendDirectorDAO frontendDirectorDAO;
 
-    private FrontendDirectorInfoDAO frontendDirectorInfoDAO;
-
     private StatisticsService statisticsService;
 
     @Autowired
-    public void setFrontendDirectorInfoDAO(FrontendDirectorInfoDAO frontendDirectorInfoDAO) {
-        this.frontendDirectorInfoDAO = frontendDirectorInfoDAO;
-    }
-
-    @Autowired
-    public void setFrontendDirectorDAO(FrontendDirectorDAO frontendDirectorDAO) {
+    public FrontendDirectorService(FrontendDirectorDAO frontendDirectorDAO, StatisticsService statisticsService) {
         this.frontendDirectorDAO = frontendDirectorDAO;
-    }
-
-    @Autowired
-    public void setStatisticsService(StatisticsService statisticsService) {
         this.statisticsService = statisticsService;
     }
 
@@ -53,11 +41,6 @@ public class FrontendDirectorService {
     }
 
     @NotNull
-    public List<FrontendDirectorInfo> getDirectorInfoListById(long id) {
-        return frontendDirectorInfoDAO.getDirectorInfoListById(id);
-    }
-
-    @NotNull
     public List<FrontendDirector> getProblemDirectors(@Nullable Date fromDate, @Nullable Date toDate) {
         return getProblemDirectorsInfoStream(fromDate, toDate)
                 .map(FrontendDirectorInfo::getDirector)
@@ -67,9 +50,16 @@ public class FrontendDirectorService {
 
     @NotNull
     public Stream<FrontendDirectorInfo> getProblemDirectorsInfoStream(@Nullable Date fromDate, @Nullable Date toDate) {
-        return frontendDirectorInfoDAO.getDirectorsInfoList().stream()
+        return frontendDirectorDAO.getDirectorsInfoList().stream()
                 .filter(info -> info.satisfiedDate(fromDate, toDate)
                         && (info.getSummaryBucketRate() > statisticsService.getQueueSummaryRateUpperBound()
                         && info.getMbRate() > statisticsService.getDirectorsMbRateUpperBound()));
+    }
+
+    @NotNull
+    public List<FrontendDirectorInfo> getDirectorInfoListById(long id, @Nullable Date fromDate, @Nullable Date toDate) {
+        return frontendDirectorDAO.getDirectorInfoListById(id).stream()
+                .filter(info -> info.satisfiedDate(fromDate, toDate))
+                .collect(Collectors.toList());
     }
 }

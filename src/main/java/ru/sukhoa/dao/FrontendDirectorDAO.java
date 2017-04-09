@@ -1,12 +1,14 @@
 package ru.sukhoa.dao;
 
 
+import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.sukhoa.domain.FrontendDirector;
+import ru.sukhoa.domain.FrontendDirectorInfo;
 
 import java.util.List;
 
@@ -40,6 +42,36 @@ public class FrontendDirectorDAO {
             session = sessionFactory.openSession();
             //noinspection unchecked
             return session.createCriteria(FrontendDirector.class).list();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+
+    @NotNull
+    public List<FrontendDirectorInfo> getDirectorInfoListById(long id) {
+        Session session = null;
+
+        try {
+            session = sessionFactory.openSession();
+            //noinspection unchecked
+            return session.createQuery("select Info from FrontendDirectorInfo Info where Info.director.id = :id")
+                    .setParameter("id", id).list();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+
+    @NotNull
+    public List<FrontendDirectorInfo> getDirectorsInfoList() {
+        Session session = null;
+        try {
+            session = sessionFactory.openSession();
+            //noinspection unchecked
+            return session.createCriteria(FrontendDirectorInfo.class).list();
         } finally {
             if (session != null) {
                 session.close();

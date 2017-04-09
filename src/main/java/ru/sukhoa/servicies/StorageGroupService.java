@@ -4,7 +4,6 @@ import com.sun.istack.internal.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.sukhoa.dao.StorageGroupDAO;
-import ru.sukhoa.dao.StorageGroupInfoDAO;
 import ru.sukhoa.domain.StorageGroup;
 import ru.sukhoa.domain.StorageGroupInfo;
 
@@ -17,30 +16,16 @@ import java.util.stream.Collectors;
 public class StorageGroupService {
     private StatisticsService statisticsService;
 
-    private StorageGroupInfoDAO storageGroupInfoDAO;
-
     private FrontendDirectorService frontendDirectorService;
 
     private StorageGroupDAO storageGroupDAO;
 
     @Autowired
-    public void setFrontendDirectorService(FrontendDirectorService frontendDirectorService) {
-        this.frontendDirectorService = frontendDirectorService;
-    }
-
-    @Autowired
-    public void setStorageGroupDAO(StorageGroupDAO storageGroupDAO) {
-        this.storageGroupDAO = storageGroupDAO;
-    }
-
-    @Autowired
-    public void setStorageGroupInfoDAO(StorageGroupInfoDAO storageGroupInfoDAO) {
-        this.storageGroupInfoDAO = storageGroupInfoDAO;
-    }
-
-    @Autowired
-    public void setStatisticsService(StatisticsService statisticsService) {
+    public StorageGroupService(StatisticsService statisticsService,
+                               FrontendDirectorService frontendDirectorService, StorageGroupDAO storageGroupDAO) {
         this.statisticsService = statisticsService;
+        this.frontendDirectorService = frontendDirectorService;
+        this.storageGroupDAO = storageGroupDAO;
     }
 
     @NotNull
@@ -60,7 +45,7 @@ public class StorageGroupService {
         }
 
         // getting all SG which have been high loaded during same dates as a specified director
-        return storageGroupInfoDAO.getStorageGroupInfoList().stream()
+        return storageGroupDAO.getStorageGroupInfoList().stream()
                 .filter(info -> problemDates.contains(info.getDateStamp().getDatestamp())
                         && info.getSummaryBucketRate() > statisticsService.getResponseTimeSummaryRateUpperBound()
                         && info.getMbRate() > statisticsService.getGroupsMbRateUpperBound())

@@ -4,8 +4,8 @@ import com.google.common.math.Quantiles;
 import com.sun.istack.internal.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.sukhoa.dao.FrontendDirectorInfoDAO;
-import ru.sukhoa.dao.StorageGroupInfoDAO;
+import ru.sukhoa.dao.FrontendDirectorDAO;
+import ru.sukhoa.dao.StorageGroupDAO;
 import ru.sukhoa.domain.BaseInfo;
 import ru.sukhoa.domain.FrontendDirectorInfo;
 import ru.sukhoa.domain.StorageGroupInfo;
@@ -18,10 +18,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class StatisticsService {
+    private FrontendDirectorDAO frontendDirectorDAO;
 
-    private FrontendDirectorInfoDAO frontendDirectorInfoDAO;
-
-    private StorageGroupInfoDAO storageGroupInfoDAO;
+    private StorageGroupDAO storageGroupDAO;
 
     private volatile Double queueSummaryRateUpperBound;
 
@@ -32,19 +31,15 @@ public class StatisticsService {
     private volatile Double groupsMbRateUpperBound;
 
     @Autowired
-    public void setFrontendDirectorInfoDAO(FrontendDirectorInfoDAO frontendDirectorInfoDAO) {
-        this.frontendDirectorInfoDAO = frontendDirectorInfoDAO;
-    }
-
-    @Autowired
-    public void setStorageGroupInfoDAO(StorageGroupInfoDAO storageGroupInfoDAO) {
-        this.storageGroupInfoDAO = storageGroupInfoDAO;
+    public StatisticsService(FrontendDirectorDAO frontendDirectorDAO, StorageGroupDAO storageGroupDAO) {
+        this.frontendDirectorDAO = frontendDirectorDAO;
+        this.storageGroupDAO = storageGroupDAO;
     }
 
     @PostConstruct
     public void initialize() {
-        List<FrontendDirectorInfo> dInfos = frontendDirectorInfoDAO.getDirectorsInfoList();
-        List<StorageGroupInfo> gInfos = storageGroupInfoDAO.getStorageGroupInfoList();
+        List<FrontendDirectorInfo> dInfos = frontendDirectorDAO.getDirectorsInfoList();
+        List<StorageGroupInfo> gInfos = storageGroupDAO.getStorageGroupInfoList();
         queueSummaryRateUpperBound = computeBucketsUpperBound(dInfos);
         directorsMbRateUpperBound = computeMbUpperBound(dInfos);
         responseTimeSummaryRateUpperBound = computeBucketsUpperBound(gInfos);
@@ -78,7 +73,7 @@ public class StatisticsService {
         if (queueSummaryRateUpperBound == null) {
             synchronized (this) {
                 if (queueSummaryRateUpperBound == null) {
-                    computeBucketsUpperBound(frontendDirectorInfoDAO.getDirectorsInfoList());
+                    computeBucketsUpperBound(frontendDirectorDAO.getDirectorsInfoList());
                 }
             }
         }
@@ -90,7 +85,7 @@ public class StatisticsService {
         if (directorsMbRateUpperBound == null) {
             synchronized (this) {
                 if (directorsMbRateUpperBound == null) {
-                    computeMbUpperBound(frontendDirectorInfoDAO.getDirectorsInfoList());
+                    computeMbUpperBound(frontendDirectorDAO.getDirectorsInfoList());
                 }
             }
         }
@@ -102,7 +97,7 @@ public class StatisticsService {
         if (responseTimeSummaryRateUpperBound == null) {
             synchronized (this) {
                 if (responseTimeSummaryRateUpperBound == null) {
-                    computeBucketsUpperBound(storageGroupInfoDAO.getStorageGroupInfoList());
+                    computeBucketsUpperBound(storageGroupDAO.getStorageGroupInfoList());
                 }
             }
         }
@@ -114,7 +109,7 @@ public class StatisticsService {
         if (groupsMbRateUpperBound == null) {
             synchronized (this) {
                 if (groupsMbRateUpperBound == null) {
-                    computeMbUpperBound(storageGroupInfoDAO.getStorageGroupInfoList());
+                    computeMbUpperBound(storageGroupDAO.getStorageGroupInfoList());
                 }
             }
         }
