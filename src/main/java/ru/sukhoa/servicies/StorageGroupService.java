@@ -1,6 +1,7 @@
 package ru.sukhoa.servicies;
 
 import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.sukhoa.dao.StorageGroupDAO;
@@ -33,7 +34,8 @@ public class StorageGroupService {
         return storageGroupDAO.getStorageGroupList();
     }
 
-    public List<StorageGroup> getProblemGroupsForDirector(long directorId, Date fromDate, Date toDate) {
+    @NotNull
+    public List<StorageGroup> getProblemGroupsForDirector(long directorId, @Nullable Date fromDate, @Nullable Date toDate) {
         // getting all dates between (fromDate, toDate) where problems with director (with specified id) occured
         final Set<Date> problemDates = frontendDirectorService.getProblemDirectorsInfoStream(fromDate, toDate)
                 .filter(info -> info.getDirector().getId() == directorId)
