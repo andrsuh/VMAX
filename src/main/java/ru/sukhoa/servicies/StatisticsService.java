@@ -70,49 +70,21 @@ public class StatisticsService {
 
     @NotNull
     public Double getQueueSummaryRateUpperBound() {
-        if (queueSummaryRateUpperBound == null) {
-            synchronized (this) {
-                if (queueSummaryRateUpperBound == null) {
-                    computeBucketsUpperBound(frontendDirectorDAO.getDirectorsInfoList());
-                }
-            }
-        }
         return queueSummaryRateUpperBound;
     }
 
     @NotNull
     public Double getDirectorsMbRateUpperBound() {
-        if (directorsMbRateUpperBound == null) {
-            synchronized (this) {
-                if (directorsMbRateUpperBound == null) {
-                    computeMbUpperBound(frontendDirectorDAO.getDirectorsInfoList());
-                }
-            }
-        }
         return directorsMbRateUpperBound;
     }
 
     @NotNull
     public Double getResponseTimeSummaryRateUpperBound() {
-        if (responseTimeSummaryRateUpperBound == null) {
-            synchronized (this) {
-                if (responseTimeSummaryRateUpperBound == null) {
-                    computeBucketsUpperBound(storageGroupDAO.getStorageGroupInfoList());
-                }
-            }
-        }
         return responseTimeSummaryRateUpperBound;
     }
 
     @NotNull
     public Double getGroupsMbRateUpperBound() {
-        if (groupsMbRateUpperBound == null) {
-            synchronized (this) {
-                if (groupsMbRateUpperBound == null) {
-                    computeMbUpperBound(storageGroupDAO.getStorageGroupInfoList());
-                }
-            }
-        }
         return groupsMbRateUpperBound;
     }
 }
