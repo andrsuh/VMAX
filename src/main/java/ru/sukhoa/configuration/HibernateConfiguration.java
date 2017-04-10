@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
 
 @Configuration
-@EnableTransactionManagement
 public class HibernateConfiguration {
 
     @Bean
@@ -19,21 +18,9 @@ public class HibernateConfiguration {
         return hemf.getSessionFactory();
     }
 
-    @Bean(name = "datasource")
+    @Bean
     @ConfigurationProperties(prefix = "spring.datasource")
     public DataSource getPostgresDatasource() {
         return DataSourceBuilder.create().build();
     }
-
-//    @Bean
-//    @Autowired
-//    public HibernateTransactionManager transactionManager(
-//            SessionFactory sessionFactory) {
-//
-//        HibernateTransactionManager txManager
-//                = new HibernateTransactionManager();
-//        txManager.setSessionFactory(sessionFactory);
-//
-//        return txManager;
-//    }
 }

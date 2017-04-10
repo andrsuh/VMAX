@@ -31,24 +31,24 @@ public class MainController {
 
     @RequestMapping(value = "problem_directors", method = RequestMethod.GET)
     public List<FrontendDirector> getProblemDirectors(
-            @RequestParam(value = "fromDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date fromDate,
-            @RequestParam(value = "toDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date toDate) {
+            @RequestParam(value = "from_date", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date fromDate,
+            @RequestParam(value = "to_date", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date toDate) {
         return directorService.getProblemDirectors(fromDate, toDate);
     }
 
     @RequestMapping(value = "problem_groups", method = RequestMethod.GET)
     public List<StorageGroup> getProblemGroupsForDirector(
             @RequestParam(value = "director_id", required = true) long directorId,
-            @RequestParam(value = "fromDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date fromDate,
-            @RequestParam(value = "toDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date toDate) {
+            @RequestParam(value = "from_date", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date fromDate,
+            @RequestParam(value = "to_date", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date toDate) {
         return storageGroupService.getProblemGroupsForDirector(directorId, fromDate, toDate);
     }
 
     @RequestMapping(value = "directors_info", method = RequestMethod.GET)
     public List<FrontendDirectorInfo> getDirectorInfo(
             @RequestParam(value = "director_id", required = true) long directorId,
-            @RequestParam(value = "fromDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date fromDate,
-            @RequestParam(value = "toDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date toDate) {
+            @RequestParam(value = "from_date", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date fromDate,
+            @RequestParam(value = "to_date", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date toDate) {
         return directorService.getDirectorInfoListById(directorId, fromDate, toDate);
     }
 

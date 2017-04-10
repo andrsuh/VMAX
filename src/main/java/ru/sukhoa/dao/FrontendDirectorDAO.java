@@ -5,6 +5,7 @@ import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.sukhoa.domain.FrontendDirector;
@@ -56,8 +57,8 @@ public class FrontendDirectorDAO {
         try {
             session = sessionFactory.openSession();
             //noinspection unchecked
-            return session.createQuery("select Info from FrontendDirectorInfo Info where Info.director.id = :id")
-                    .setParameter("id", id).list();
+            return session.createCriteria(FrontendDirectorInfo.class)
+                    .add(Restrictions.eq("director.id", id)).list();
         } finally {
             if (session != null) {
                 session.close();

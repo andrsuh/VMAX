@@ -9,6 +9,7 @@ import ru.sukhoa.domain.StorageGroup;
 import ru.sukhoa.domain.StorageGroupInfo;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -40,7 +41,7 @@ public class StorageGroupService {
         final Set<Date> problemDates = frontendDirectorService.getProblemDirectorsInfoStream(fromDate, toDate)
                 .filter(info -> info.getDirector().getId() == directorId)
                 .map(info -> info.getDateStamp().getDatestamp())
-                .collect(Collectors.toSet());
+                .collect(Collectors.toCollection(HashSet::new));
 
         if (problemDates.isEmpty()) {
             throw new RuntimeException("No problems connected with specified director was found");
