@@ -26,7 +26,6 @@ public class FrontendDirectorService {
         this.statisticsService = statisticsService;
     }
 
-    @NotNull
     public FrontendDirector getFrontendDirector(long id) {
         FrontendDirector feDirector = frontendDirectorDAO.getDirector(id);
         if (feDirector == null) {
@@ -35,12 +34,10 @@ public class FrontendDirectorService {
         return feDirector;
     }
 
-    @NotNull
     public List<FrontendDirector> getDirectorsList() {
         return frontendDirectorDAO.getDirectorsList();
     }
 
-    @NotNull
     public List<FrontendDirector> getProblemDirectors(@Nullable Date fromDate, @Nullable Date toDate) {
         return getProblemDirectorsInfoStream(fromDate, toDate)
                 .map(FrontendDirectorInfo::getDirector)
@@ -48,7 +45,6 @@ public class FrontendDirectorService {
                 .collect(Collectors.toList());
     }
 
-    @NotNull
     public Stream<FrontendDirectorInfo> getProblemDirectorsInfoStream(@Nullable Date fromDate, @Nullable Date toDate) {
         return frontendDirectorDAO.getDirectorsInfoList().stream()
                 .filter(info -> info.satisfiedDate(fromDate, toDate)
@@ -56,7 +52,6 @@ public class FrontendDirectorService {
                         && info.getMbRate() > statisticsService.getDirectorsMbRateUpperBound()));
     }
 
-    @NotNull
     public List<FrontendDirectorInfo> getDirectorInfoListById(long id, @Nullable Date fromDate, @Nullable Date toDate) {
         return frontendDirectorDAO.getDirectorInfoListById(id).stream()
                 .filter(info -> info.satisfiedDate(fromDate, toDate))

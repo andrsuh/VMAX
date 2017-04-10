@@ -30,12 +30,10 @@ public class StorageGroupService {
         this.storageGroupDAO = storageGroupDAO;
     }
 
-    @NotNull
     public List<StorageGroup> getStorageGroupList() {
         return storageGroupDAO.getStorageGroupList();
     }
 
-    @NotNull
     public List<StorageGroup> getProblemGroupsForDirector(long directorId, @Nullable Date fromDate, @Nullable Date toDate) {
         // getting all dates between (fromDate, toDate) where problems with director (with specified id) occured
         final Set<Date> problemDates = frontendDirectorService.getProblemDirectorsInfoStream(fromDate, toDate)

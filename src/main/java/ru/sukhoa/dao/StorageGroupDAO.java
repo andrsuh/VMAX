@@ -1,6 +1,5 @@
 package ru.sukhoa.dao;
 
-import com.sun.istack.internal.NotNull;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,6 @@ public class StorageGroupDAO {
         this.sessionFactory = sessionFactory;
     }
 
-    @NotNull
     public List<StorageGroup> getStorageGroupList() {
         Session session = null;
         try {
@@ -33,7 +31,6 @@ public class StorageGroupDAO {
         }
     }
 
-    @NotNull
     public List<StorageGroupInfo> getStorageGroupInfoList() {
         Session session = null;
         try {

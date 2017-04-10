@@ -26,7 +26,7 @@ public class StatisticsService {
         this.storageGroupDAO = storageGroupDAO;
     }
 
-    private double computeBucketsUpperBound(@NotNull List<? extends BaseInfo> directorsInfoList) {
+    private double computeBucketsUpperBound(List<? extends BaseInfo> directorsInfoList) {
         List<Double> bucketRateValues = directorsInfoList.stream()
                 .map(BaseInfo::getSummaryBucketRate)
                 .filter(rate -> rate > 0.0)
@@ -35,7 +35,7 @@ public class StatisticsService {
         return computeBound(bucketRateValues);
     }
 
-    private double computeMbUpperBound(@NotNull List<? extends BaseInfo> directorsInfoList) {
+    private double computeMbUpperBound(List<? extends BaseInfo> directorsInfoList) {
         List<Double> mbRateValues = directorsInfoList.stream()
                 .map(BaseInfo::getMbRate)
                 .collect(Collectors.toList());
@@ -43,7 +43,7 @@ public class StatisticsService {
         return computeBound(mbRateValues);
     }
 
-    private double computeBound(@NotNull List<? extends Number> values) {
+    private double computeBound(List<? extends Number> values) {
         Map<Integer, Double> quantiles = Quantiles.quartiles().indexes(Arrays.asList(1, 3)).compute(values);
         return quantiles.get(3) + 1.5 * (quantiles.get(3) - quantiles.get(1));
     }

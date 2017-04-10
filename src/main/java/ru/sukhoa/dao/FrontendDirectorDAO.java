@@ -1,7 +1,6 @@
 package ru.sukhoa.dao;
 
 
-import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -36,7 +35,6 @@ public class FrontendDirectorDAO {
         }
     }
 
-    @Nullable
     public List<FrontendDirector> getDirectorsList() {
         Session session = null;
         try {
@@ -50,7 +48,6 @@ public class FrontendDirectorDAO {
         }
     }
 
-    @NotNull
     public List<FrontendDirectorInfo> getDirectorInfoListById(long id) {
         Session session = null;
 
@@ -66,7 +63,6 @@ public class FrontendDirectorDAO {
         }
     }
 
-    @NotNull
     public List<FrontendDirectorInfo> getDirectorsInfoList() {
         Session session = null;
         try {
