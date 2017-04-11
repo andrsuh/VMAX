@@ -26,14 +26,6 @@ public class FrontendDirectorService {
         this.statisticsService = statisticsService;
     }
 
-    public FrontendDirector getFrontendDirector(long id) {
-        FrontendDirector feDirector = frontendDirectorDAO.getDirector(id);
-        if (feDirector == null) {
-            throw new IllegalArgumentException("Director with specified id does not exist");
-        }
-        return feDirector;
-    }
-
     public List<FrontendDirector> getDirectorsList() {
         return frontendDirectorDAO.getDirectorsList();
     }
@@ -56,5 +48,13 @@ public class FrontendDirectorService {
         return frontendDirectorDAO.getDirectorInfoListById(id).stream()
                 .filter(info -> info.satisfiedDate(fromDate, toDate))
                 .collect(Collectors.toList());
+    }
+
+    public FrontendDirector getFrontendDirector(long id) {
+        FrontendDirector feDirector = frontendDirectorDAO.getDirector(id);
+        if (feDirector == null) {
+            throw new IllegalArgumentException("Director with specified id does not exist");
+        }
+        return feDirector;
     }
 }

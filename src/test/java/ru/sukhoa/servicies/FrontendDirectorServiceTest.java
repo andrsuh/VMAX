@@ -44,7 +44,6 @@ public class FrontendDirectorServiceTest {
     @After
     public void checkMethodWasCalled() {
         verify(frontendDirectorService, atLeastOnce()).getProblemDirectorsInfoStream(null, null);
-
     }
 
     @Test

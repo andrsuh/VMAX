@@ -22,6 +22,21 @@ public class FrontendDirectorDAO {
         this.sessionFactory = sessionFactory;
     }
 
+    public List<FrontendDirectorInfo> getDirectorInfoListById(long id) {
+        Session session = null;
+
+        try {
+            session = sessionFactory.openSession();
+            //noinspection unchecked
+            return session.createCriteria(FrontendDirectorInfo.class)
+                    .add(Restrictions.eq("director.id", id)).list();
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+
     @Nullable
     public FrontendDirector getDirector(long id) {
         Session session = null;
@@ -41,21 +56,6 @@ public class FrontendDirectorDAO {
             session = sessionFactory.openSession();
             //noinspection unchecked
             return session.createCriteria(FrontendDirector.class).list();
-        } finally {
-            if (session != null) {
-                session.close();
-            }
-        }
-    }
-
-    public List<FrontendDirectorInfo> getDirectorInfoListById(long id) {
-        Session session = null;
-
-        try {
-            session = sessionFactory.openSession();
-            //noinspection unchecked
-            return session.createCriteria(FrontendDirectorInfo.class)
-                    .add(Restrictions.eq("director.id", id)).list();
         } finally {
             if (session != null) {
                 session.close();
